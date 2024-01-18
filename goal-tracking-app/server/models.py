@@ -67,3 +67,26 @@ def authenticate(self, password):
 
 def __repr__(self):
     return f"User {self.name}, {self.email}"
+
+# Insert goals table
+
+class Journal(db.Model, SerializerMixin):
+    __tablename__ = "journals"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    journal_entry = db.Column(db.String)
+    goal_id = db.Column(db.Integer, db.ForeignKey("goals.id"))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+@validates("journal_entry")
+def validate_description(self, key, journal_entry):
+    if not journal_entry:
+        raise ValueError("Journal entry is required to create a journal entry")
+    elif not 0 <= len(journal_entry) <= 200:
+        raise ValueError("Journal entry has reached max characters")
+    return journal_entry
+
+def __repr__(self):
+    return f"Goal: {self.goal_id}, {self.date}: {self.journal_entry}"
