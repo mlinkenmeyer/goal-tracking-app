@@ -17,8 +17,7 @@ class Goal(db.Model, SerializerMixin):
     target_date = db.Column(db.Date)
     category = db.Column(db.String)
     status = db.Column(db.String)
-    user_id = db.Column(db. Integer, db.ForeignKey('users.id'))
-    journal_id = db.Column(db. Integer, db.ForeignKey('journals.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.Date)
     updated_at = db.Column(db.Date)
 
