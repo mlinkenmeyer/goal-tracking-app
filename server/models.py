@@ -81,8 +81,3 @@ class Goal(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Goal {self.id} {self.title} {self.description} {self.target_date} {self.category} {self.status} {self.created_at} {self.updated_at}'
-    
-
-# users = db.relationship('Goal', back_populates='user')
-    
-# journals = db.relationship()
