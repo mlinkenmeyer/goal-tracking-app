@@ -43,16 +43,14 @@ def create_goal():
     except ValueError as e:
         return make_response({"error": e.__str__()}, 422) 
 
+@app.route("/goals/<int:id>", methods=["GET"])
+def get_goal(id):
+    # ipdb.set_trace()  
+    goal = db.session.get(Goal, id)
+    if goal: 
+        return make_response(goal.to_dict(), 200)
+    return make_response({"error": "Goal not found"}, 404)
 
-# class Goals(Resource):
-#     def get(self):
-#         try:
-#             goals = [goal.to_dict() for goal in Goal.query.all()]
-#             return make_response(goals, 200)
-#         except Exception as e:
-#             return make_response({"error": str(e)}, 500)
-
-# api.add_resource(Goals, "/goals")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
