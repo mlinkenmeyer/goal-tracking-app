@@ -47,9 +47,33 @@ def create_goal():
 def get_goal(id):
     # ipdb.set_trace()  
     goal = db.session.get(Goal, id)
+
     if goal: 
         return make_response(goal.to_dict(), 200)
     return make_response({"error": "Goal not found"}, 404)
+
+@app.route("/goals/<int:id>", methods=["PATCH"])
+def update_goal(id):
+    goal = db.session.get(Goal, id)
+
+    if goal:
+        goal_json = request.get_json()
+        try:
+            for key in goal_json:
+                if hasattr(goal, key):
+                    if key == 'target_date':
+                        goal_json[key] = datetime.strptime(goal_json[key], '%Y-%m-%d').date()
+
+                    setattr(goal, key, goal_json[key])
+            print("Before Commit:", goal.to_dict())  
+            db.session.commit()
+            print("After Commit:", goal.to_dict())  
+            return make_response(goal.to_dict(), 202)
+        except ValueError as e:
+            print("Error:", e)  
+            return make_response({"errors": ["Validation errors"]}, 400)
+    
+    return make_response({"errors": ["Goal not found"]}, 404)
 
 
 if __name__ == '__main__':
