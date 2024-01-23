@@ -75,6 +75,15 @@ def update_goal(id):
     
     return make_response({"errors": ["Goal not found"]}, 404)
 
+@app.route("/goals/<int:id>", methods=["DELETE"])
+def delete_goal(id):
+    goal = db.session.get(Goal, id)
+
+    if goal: 
+        db.session.delete(goal)
+        db.session.commit()
+    return make_response({"error": "Goal not found"}, 404)
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
