@@ -9,8 +9,6 @@ import re
 
 from config import db, bcrypt
 
-# Models go here!
-
 class Goal(db.Model, SerializerMixin):
     __tablename__ = 'goals'
 
@@ -23,6 +21,8 @@ class Goal(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.Date)
     updated_at = db.Column(db.Date)
+
+    serialize_rules = ("-users", "-journals")
 
     # Relationships
     user = db.relationship("User", back_populates="goals")

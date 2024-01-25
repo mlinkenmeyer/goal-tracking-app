@@ -16,6 +16,8 @@ if __name__ == '__main__':
         print("Starting seed...")
         # Seed code goes here!
 
+
+
         # Clear out users before seeding
         User.query.delete()
 
