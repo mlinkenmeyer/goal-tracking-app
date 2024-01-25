@@ -3,6 +3,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
 from dateutil.parser import isoparse
+from sqlalchemy.sql import func
 import datetime
 import re
 
@@ -22,6 +23,10 @@ class Goal(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.Date)
     updated_at = db.Column(db.Date)
+
+    # Relationships
+    user = db.relationship("User", back_populates="goals")
+    journals = db.relationship("Journal", back_populates="goal", cascade="all")
 
     @validates("title")
     def validate_title(self, key, title):
@@ -92,11 +97,11 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String)
     _password_hash = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=func.current_timestamp())
 
     # Relationships
-    # goals = db.relationship("Goals", back_populates="user", cascade="all")
-    # journals = association_proxy("goals", "journals")
+    goals = db.relationship("Goal", back_populates="user", cascade="all")
+    journals = association_proxy("goals", "journals")
 
     # Validations
     @validates("name")
@@ -155,6 +160,10 @@ class Journal(db.Model, SerializerMixin):
     goal_id = db.Column(db.Integer, db.ForeignKey("goals.id"))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    # Relationships
+    goal = db.relationship("Goal", back_populates="journals")
+    user = association_proxy("goal", "user")
 
     @validates("journal_entry")
     def validate_description(self, key, journal_entry):
