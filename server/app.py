@@ -14,7 +14,7 @@ from dateutil import parser
 from config import app, db, api
 
 # Add your model imports
-from models import Goal, User
+from models import Goal, Journal, User
 
 # Views go here!
 
@@ -85,7 +85,28 @@ def delete_goal(id):
         db.session.commit()
     return make_response({"error": "Goal not found"}, 404)
 
+@app.route("/journals", methods=["GET"])
+def journals():
+    journals = Journal.query.all()
+    return make_response([j.to_dict() for j in journals], 200)
 
+@app.route("/journals", methods=["POST"])
+def create_journal():
+    journal = Journal()
+    journal_json = request.get_json()
+    try:
+        date_str = journal_json.get("date")
+        if date_str:
+            journal_json["date"] = datetime.strptime(date_str, "%Y-%m-%d")
+        
+        for key in journal_json:
+            if hasattr(journal, key):
+                setattr(journal, key, journal_json[key])
+        db.session.add(journal)
+        db.session.commit()
+        return make_response(journal.to_dict(), 201)
+    except ValueError as e:
+        return make_response({"error": e.__str__()}, 422) 
 class Users(Resource):
     
     def get(self):
