@@ -35,7 +35,7 @@ def seed_journalss():
             created_at=fake.date_between(start_date='-30d', end_date='today'),
             updated_at=fake.date_between(start_date='today', end_date='+30d')
         )
-    return goals 
+    return journals 
 
 if __name__ == '__main__':
     fake = Faker()
