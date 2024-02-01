@@ -103,6 +103,8 @@ class User(db.Model, SerializerMixin):
     goals = db.relationship("Goal", back_populates="user", cascade="all")
     journals = association_proxy("goals", "journals")
 
+    serialize_rules = ("-goals", "-journals")
+
     # Validations
     @validates("name")
     def validate_name(self, key, name):
@@ -164,6 +166,8 @@ class Journal(db.Model, SerializerMixin):
     # Relationships
     goal = db.relationship("Goal", back_populates="journals")
     user = association_proxy("goal", "user")
+
+    serialize_rules = ("-goal", "-user")
 
     @validates("journal_entry")
     def validate_description(self, key, journal_entry):

@@ -14,7 +14,7 @@ from dateutil import parser
 from config import app, db, api
 
 # Add your model imports
-from models import Goal, User
+from models import Goal, User, Journal
 
 # Views go here!
 
@@ -165,6 +165,51 @@ class UserById(Resource):
             )
         
 api.add_resource(UserById, "/users/<int:id>")
+
+class JournalById(Resource):
+
+    def get(self, id):
+        try:
+            journal = Journal.query.filter_by(id=id).first()
+            return make_response(
+                journal.to_dict(), 200
+            )
+        except:
+            return make_response(
+                {"error": "Journal ID does not exist"}
+            )
+    
+    def patch(self, id):
+        try:
+            journal = Journal.query.filter_by(id=id).first()
+
+            data = request.get_json()
+            for attr in data:
+                setattr(journal, attr, data.get(attr))
+                # setattr(journal, "updated_at", datetime.datetime.utcnow)
+                db.session.commit()
+                return make_response(
+                    {"message": f"Journal {journal.id} has been updated"}, 203
+                )
+        except Exception as e:
+            return make_response(
+                {"error": str(e)}, 500
+            )
+
+    def delete(self, id):
+        try:
+            journal = Journal.query.filter_by(id=id).first()
+            db.session.delete(journal)
+            db.session.commit()
+            return make_response(
+                {"message": f"Journal {journal.id} has been deleted"}, 204
+            )
+        except:
+            return make_response(
+                {"error": "Journal ID does not exist"}
+            )
+        
+api.add_resource(JournalById, "/journals/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
