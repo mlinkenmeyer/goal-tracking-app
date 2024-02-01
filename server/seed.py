@@ -8,15 +8,40 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db, User
+from models import db, User, Goal, Journal
+
+def seed_goals():
+    goals = []
+    for goal in range(15):
+        goal = Goal(
+            title=fake.word(),
+            description=fake.text(max_nb_chars=150),
+            target_date=fake.date_between(start_date='-30d', end_date='+30d'),
+            category=fake.random_element(elements=("Wellness", "Financial", "Relationships", "Career", "School", "Travel")),
+            status=fake.random_element(elements=("Not yet started", "In progress", "Complete")),
+            user=User,
+            created_at=fake.date_between(start_date='-30d', end_date='today'),
+            updated_at=fake.date_between(start_date='today', end_date='+30d')
+        )
+    return goals 
+
+def seed_journalss():
+    journals = []
+    for journal in range(25):
+        journal = Journal(
+            date=fake.date_between(start_date='-30d', end_date='+30d'),
+            journal_entry=fake.text(max_nb_chars=150),
+            goal=Goal,
+            created_at=fake.date_between(start_date='-30d', end_date='today'),
+            updated_at=fake.date_between(start_date='today', end_date='+30d')
+        )
+    return journals 
 
 if __name__ == '__main__':
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
         # Seed code goes here!
-
-
 
         # Clear out users before seeding
         User.query.delete()
@@ -45,4 +70,17 @@ if __name__ == '__main__':
         db.session.add_all(all)
         db.session.commit()
         print("Done seeding users")
+
+
+        # Clear out goals before seeding
+        print("Clearing goals in db...")
+        Goal.query.delete()
+
+        print("Seeding goals...")
+        goals = seed_goals()
+        db.session.add_all(goals)
+        db.session.commit()
+
+        print("Done seeding goals.")
+
                       
