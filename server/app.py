@@ -162,7 +162,6 @@ class UserById(Resource):
             data = request.get_json()
             for attr in data:
                 setattr(user, attr, data.get(attr))
-                # setattr(user, "updated_at", datetime.datetime.utcnow)
                 db.session.commit()
                 return make_response(
                     {"message": f"User {user.id} has been updated"}, 203
