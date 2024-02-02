@@ -19,10 +19,10 @@ class Goal(db.Model, SerializerMixin):
     category = db.Column(db.String)
     status = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created_at = db.Column(db.Date)
-    updated_at = db.Column(db.Date)
+    created_at = db.Column(db.Date, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.Date, default=datetime.datetime.utcnow, onupdate=func.current_timestamp())
 
-    serialize_rules = ("-users", "-journals")
+    serialize_rules = ("-user", "-journals")
 
     # Relationships
     user = db.relationship("User", back_populates="goals")
@@ -161,7 +161,7 @@ class Journal(db.Model, SerializerMixin):
     journal_entry = db.Column(db.String)
     goal_id = db.Column(db.Integer, db.ForeignKey("goals.id"))
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=func.current_timestamp())
 
     # Relationships
     goal = db.relationship("Goal", back_populates="journals")
