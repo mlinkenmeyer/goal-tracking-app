@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
-  const [targetDate, setTargetDate] = useState("");
+
+  const [goalsFormValues, setGoalsFormValues] = useState({
+    title: "",
+    description: "",
+    status: "",
+    targetDate: "",
+  });
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -18,10 +21,21 @@ function GoalsPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(`The title you entered was: ${title}`);
-    console.log(`The description you entered was: ${description}`);
-    console.log(`The status you entered was: ${status}`);
-    console.log(`The target date you entered was: ${targetDate}`);
+    setGoals([...goals, goalsFormValues]);
+    setGoalsFormValues({
+      title: "",
+      description: "",
+      status: "",
+      targetDate: "",
+    });
+    console.log(`The title you entered was: ${goalsFormValues.title}`);
+    console.log(
+      `The description you entered was: ${goalsFormValues.description}`
+    );
+    console.log(`The status you entered was: ${goalsFormValues.status}`);
+    console.log(
+      `The target date you entered was: ${goalsFormValues.targetDate}`
+    );
   };
 
   return (
@@ -41,34 +55,52 @@ function GoalsPage() {
           Title
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={goalsFormValues.title}
+            onChange={(e) =>
+              setGoalsFormValues({ ...goalsFormValues, title: e.target.value })
+            }
           />
         </label>
+        <br />
         <label>
           Description
           <input
             type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={goalsFormValues.description}
+            onChange={(e) =>
+              setGoalsFormValues({
+                ...goalsFormValues,
+                description: e.target.value,
+              })
+            }
           />
         </label>
+        <br />
         <label>
           Status
           <input
             type="text"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            value={goalsFormValues.status}
+            onChange={(e) =>
+              setGoalsFormValues({ ...goalsFormValues, status: e.target.value })
+            }
           />
         </label>
+        <br />
         <label>
           Target Date
           <input
             type="text"
-            value={targetDate}
-            onChange={(e) => setTargetDate(e.target.value)}
+            value={goalsFormValues.targetDate}
+            onChange={(e) =>
+              setGoalsFormValues({
+                ...goalsFormValues,
+                targetDate: e.target.value,
+              })
+            }
           />
         </label>
+        <br />
         <button type="submit">Add Goal</button>
       </form>
     </div>
