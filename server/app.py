@@ -133,7 +133,7 @@ class Users(Resource):
             db.session.add(new_user)
             db.session.commit()
             return make_response(
-                {"message": "New user added"}, 201
+                new_user.to_dict(), 201
             )
         except Exception as e:
             return make_response(
@@ -158,14 +158,15 @@ class UserById(Resource):
     def patch(self, id):
         try:
             user = User.query.filter_by(id=id).first()
-
             data = request.get_json()
-            for attr in data:
-                setattr(user, attr, data.get(attr))
-                db.session.commit()
-                return make_response(
-                    {"message": f"User {user.id} has been updated"}, 203
-                )
+            for key in data:
+                setattr(user, key, data[key])
+            if data.get("password"):
+                user.password_hash = request.get_json()["password"]
+            db.session.commit()
+            return make_response(
+                user.to_dict(), 203
+            )
         except Exception as e:
             return make_response(
                 {"error": str(e)}, 500
@@ -177,7 +178,7 @@ class UserById(Resource):
             db.session.delete(user)
             db.session.commit()
             return make_response(
-                {"message": f"User {user.id} has been deleted"}, 204
+                {}, 204
             )
         except:
             return make_response(
