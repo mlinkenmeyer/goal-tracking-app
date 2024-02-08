@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import GoalsPage from "./GoalsPage.js";
 
 function App() {
-  return <h1>Project Client</h1>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/goals" element={<GoalsPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
