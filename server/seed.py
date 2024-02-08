@@ -15,7 +15,7 @@ user_a = User(name="Adam", email="adam@email.com")
 user_b = User(name="Britney", email="britney@email.com")
 user_c = User(name="Collin", email="collin@email.com")
 user_d = User(name="Dan", email="dan@email.com")
-user_e = User(name="Elsa", email="else@email.com")
+user_e = User(name="Elsa", email="elsa@email.com")
 
 user_a.password_hash = "adam1"
 user_b.password_hash = "brit2"

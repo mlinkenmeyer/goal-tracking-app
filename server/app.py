@@ -133,7 +133,7 @@ class Users(Resource):
             db.session.add(new_user)
             db.session.commit()
             return make_response(
-                {"message": "New user added"}, 201
+                new_user.to_dict(), 201
             )
         except Exception as e:
             return make_response(
@@ -177,7 +177,7 @@ class UserById(Resource):
             db.session.delete(user)
             db.session.commit()
             return make_response(
-                {"message": f"User {user.id} has been deleted"}, 204
+                {}, 204
             )
         except:
             return make_response(
