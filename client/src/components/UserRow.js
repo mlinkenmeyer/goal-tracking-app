@@ -17,22 +17,9 @@ function UserRow({ user, showUserForm, setShowUserForm, editUser, deleteUser }) 
             method: "DELETE"
         })
         .then(() => deleteUser(user))
-
     }
 
     return (
-        // <>
-        // <tr key={user.id}>
-        //     <td>{user.name}</td>
-        //     <td>{user.email}</td>
-        //     <td><button onClick={handleEditUser}>Edit</button></td>
-        //     <td><button onClick={handleDelUser}>Delete</button></td>
-        // </tr>
-        // {showEditForm ? 
-        //     <UserForm />
-        //     : null
-        // }
-        // </>
         <>
         <tr key={user.id}>
             <td>{user.name}</td>

@@ -9,14 +9,10 @@ function UserForm({ user, addUser, editUser, showUserForm, setShowUserForm, setS
         confirm_password: ""
     }
     const [userObj, setUserObj] = useState(user ? user : initialValues)
-    
-
-    console.log(userObj)
 
     const handleAddUser = (e) => {
         e.preventDefault()
         if (userObj.name.length > 0 && userObj.email.length > 0 && userObj.password === userObj.confirm_password) {
-            console.log("submitted form")
             fetch("/users", {
                 method: "POST",
                 headers: {
@@ -43,9 +39,7 @@ function UserForm({ user, addUser, editUser, showUserForm, setShowUserForm, setS
 
     const handleEditUser = (e) => {
         e.preventDefault()
-        console.log(userObj)
         if (userObj.name.length > 0 && userObj.email.length > 0 && userObj.password === userObj.confirm_password) {
-            console.log("editing user")
             fetch(`/users/${user.id}`, {
                 method: "PATCH",
                 headers: {
@@ -75,13 +69,10 @@ function UserForm({ user, addUser, editUser, showUserForm, setShowUserForm, setS
         e.preventDefault()
         if (user) {
             handleEditUser(e)
-            console.log("edit")
         } else {
             handleAddUser(e)
-            console.log("add")
         }
     }
-
 
     const handleCancel = (e) => {
         setShowUserForm(false)

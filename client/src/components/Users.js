@@ -63,24 +63,26 @@ function Users() {
                 <button onClick={toggleUserForm}>Add New</button>
             }
             <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                {users ? users.map((user, key) =>
-                <UserRow 
-                    key={key}
-                    user={user}
-                    showUserForm={showUserForm}
-                    setShowUserForm={setShowUserForm}
-                    editUser={editUser}
-                    deleteUser={deleteUser}
-                    />
-                )
-                : <p>Users Loading...</p>
-                }
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    {users ? users.map((user, key) =>
+                    <UserRow 
+                        key={key}
+                        user={user}
+                        showUserForm={showUserForm}
+                        setShowUserForm={setShowUserForm}
+                        editUser={editUser}
+                        deleteUser={deleteUser}
+                        />
+                    )
+                    : <p>Users Loading...</p>
+                    }
+                </tbody>
             </table>
         </div>
     )
