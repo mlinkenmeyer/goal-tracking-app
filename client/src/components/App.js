@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import GoalsPage from "./GoalsPage.js";
 import Users from "./Users"
 import Journals from "./Journals"
 
 function App() {
-  return(
-    <div>
-      <h1>Goal Tracking App</h1>
-      <Users />
-      <Journals />
-    </div>
-  )
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/goals" element={<GoalsPage />} />
+      </Routes>
+      <Routes>
+        <Route path="/users" element={<Users />} />
+      </Routes>
+      <Routes>
+        <Route path="/journals" element={<Journals />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

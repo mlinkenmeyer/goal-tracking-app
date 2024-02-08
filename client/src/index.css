@@ -5,3 +5,8 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+.goal-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
