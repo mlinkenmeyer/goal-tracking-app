@@ -158,14 +158,15 @@ class UserById(Resource):
     def patch(self, id):
         try:
             user = User.query.filter_by(id=id).first()
-
             data = request.get_json()
-            for attr in data:
-                setattr(user, attr, data.get(attr))
-                db.session.commit()
-                return make_response(
-                    {"message": f"User {user.id} has been updated"}, 203
-                )
+            for key in data:
+                setattr(user, key, data[key])
+            if data.get("password"):
+                user.password_hash = request.get_json()["password"]
+            db.session.commit()
+            return make_response(
+                user.to_dict(), 203
+            )
         except Exception as e:
             return make_response(
                 {"error": str(e)}, 500

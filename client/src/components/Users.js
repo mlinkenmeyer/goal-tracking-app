@@ -28,6 +28,17 @@ function Users() {
         setUsers(updatedUsers)
     }
 
+    const editUser = (existingUser) => {
+        const updatedUsers = users.map((user) => {
+            if (user.id === existingUser.id) {
+                return existingUser
+            } else {
+                return user
+            }
+        })
+        setUsers(updatedUsers)
+    }
+
     const deleteUser = (delUser) => {
         const updatedUsers = users.filter((user) => user.id !== delUser.id)
         setUsers(updatedUsers)
@@ -42,7 +53,9 @@ function Users() {
                 <>
                     <UserForm
                         addUser={addUser}
-                        deleteUser={deleteUser} />
+                        showUserForm={showUserForm}
+                        setShowUserForm={setShowUserForm}
+                         />
                     <button onClick={toggleUserForm}>Cancel</button>
                 </>
                 )
@@ -62,6 +75,7 @@ function Users() {
                     user={user}
                     showUserForm={showUserForm}
                     setShowUserForm={setShowUserForm}
+                    editUser={editUser}
                     deleteUser={deleteUser}
                     />
                 )

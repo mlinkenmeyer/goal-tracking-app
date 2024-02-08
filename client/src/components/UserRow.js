@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserForm from "./UserForm";
 
-function UserRow({ user, showUserForm, setShowUserForm, deleteUser }) {
+function UserRow({ user, showUserForm, setShowUserForm, editUser, deleteUser }) {
 
     const [showEditForm, setShowEditForm] = useState(false)
 
@@ -34,15 +34,26 @@ function UserRow({ user, showUserForm, setShowUserForm, deleteUser }) {
         // }
         // </>
         <>
-        {showEditForm ? 
-        <UserForm user={user} />
-        :
         <tr key={user.id}>
             <td>{user.name}</td>
             <td>{user.email}</td>
+            {showEditForm ?
+            <td><button onClick={handleEditUser}>Cancel</button></td>
+            :
             <td><button onClick={handleEditUser}>Edit</button></td>
+            }
+
             <td><button onClick={(e) => handleDelUser(e)}>Delete</button></td>
         </tr>
+        {showEditForm ? 
+        <UserForm 
+            user={user}
+            showEditForm={showEditForm}
+            setShowEditForm={setShowEditForm}
+            editUser={editUser}
+            deleteUser={deleteUser} 
+            />
+        : null
         }
         </>
     )

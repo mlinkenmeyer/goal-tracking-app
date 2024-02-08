@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 
-function UserForm({ user, addUser }) {
+function UserForm({ user, addUser, editUser, showUserForm, setShowUserForm, setShowEditForm }) {
 
-    const [userObj, setUserObj] = useState({
+    const initialValues = {
         name: "",
         email: "",
         password: "",
         confirm_password: ""
-    })
+    }
+    const [userObj, setUserObj] = useState(user ? user : initialValues)
+    
 
     console.log(userObj)
 
-    const handleSubmitUser = (e) => {
+    const handleAddUser = (e) => {
         e.preventDefault()
         if (userObj.name.length > 0 && userObj.email.length > 0 && userObj.password === userObj.confirm_password) {
             console.log("submitted form")
@@ -21,14 +23,68 @@ function UserForm({ user, addUser }) {
                     "Content-Type": "application/json",
                     Accept: "application/json"
                 },
-                body: JSON.stringify(userObj)
+                body: JSON.stringify({
+                    name: userObj.name,
+                    email: userObj.email,
+                    password: userObj.password
+                })
             })
             .then((r) => r.json())
-            .then((newUser) => addUser(newUser))
+            .then((newUser) => {
+                addUser(newUser)
+                setUserObj(initialValues)
+                setShowUserForm(false)
+                }
+            )
         } else {
             alert("All fields are required or passwords don't match")
         }
+    }
 
+    const handleEditUser = (e) => {
+        e.preventDefault()
+        console.log(userObj)
+        if (userObj.name.length > 0 && userObj.email.length > 0 && userObj.password === userObj.confirm_password) {
+            console.log("editing user")
+            fetch(`/users/${user.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify({
+                    name: userObj.name,
+                    email: userObj.email,
+                    password: userObj.password
+                })
+            })
+            .then((r) => r.json())
+            .then((existingUser) => 
+                {
+                editUser(existingUser)
+                setUserObj(initialValues)
+                setShowEditForm(false)
+                }
+            )
+        } else {
+            alert("All fields are required or passwords don't match")
+        }
+    }
+
+    const handleSubmitUser = (e) => {
+        e.preventDefault()
+        if (user) {
+            handleEditUser(e)
+            console.log("edit")
+        } else {
+            handleAddUser(e)
+            console.log("add")
+        }
+    }
+
+
+    const handleCancel = (e) => {
+        setShowUserForm(false)
     }
 
     return (
@@ -62,7 +118,7 @@ function UserForm({ user, addUser }) {
                         onChange={(e) => setUserObj({...userObj, ["confirm_password"]: e.target.value})}
                         />
                         <br/>
-                <button>Submit</button>
+                <button>Submit</button><br/>
             </form>
             <br />
         </div>
