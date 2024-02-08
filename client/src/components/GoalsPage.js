@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Goal from "./Goal";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -18,6 +19,8 @@ function GoalsPage() {
     };
     fetchGoals().catch(console.error);
   }, []);
+
+  let goalsList = goals.map((goal) => <Goal key={goal.id} goal={goal} />);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,14 +44,7 @@ function GoalsPage() {
   return (
     <div>
       <h1>Goals</h1>
-      <ul className="goal-list">
-        {goals.map((goal) => (
-          <li key={goal.id}>
-            {goal.title}, {goal.description},{goal.status}, {goal.target_date},{" "}
-            {goal.category}
-          </li>
-        ))}
-      </ul>
+      {goalsList}
       <form onSubmit={handleSubmit}>
         <h2>Create a new goal</h2>
         <label>
