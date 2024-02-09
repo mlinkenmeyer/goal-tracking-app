@@ -8,7 +8,8 @@ function GoalsPage() {
     title: "",
     description: "",
     status: "",
-    targetDate: "",
+    category: "",
+    target_date: "",
   });
 
   useEffect(() => {
@@ -22,23 +23,54 @@ function GoalsPage() {
 
   let goalsList = goals.map((goal) => <Goal key={goal.id} goal={goal} />);
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setGoals([...goals, goalsFormValues]);
+  //   setGoalsFormValues({
+  //     title: "",
+  //     description: "",
+  //     status: "",
+  //     targetDate: "",
+  //   });
+  //   console.log(`The title you entered was: ${goalsFormValues.title}`);
+  //   console.log(
+  //     `The description you entered was: ${goalsFormValues.description}`
+  //   );
+  //   console.log(`The status you entered was: ${goalsFormValues.status}`);
+  //   console.log(
+  //     `The target date you entered was: ${goalsFormValues.targetDate}`
+  //   );
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setGoals([...goals, goalsFormValues]);
-    setGoalsFormValues({
-      title: "",
-      description: "",
-      status: "",
-      targetDate: "",
-    });
-    console.log(`The title you entered was: ${goalsFormValues.title}`);
-    console.log(
-      `The description you entered was: ${goalsFormValues.description}`
-    );
-    console.log(`The status you entered was: ${goalsFormValues.status}`);
-    console.log(
-      `The target date you entered was: ${goalsFormValues.targetDate}`
-    );
+
+    try {
+      const response = await fetch("http://127.0.0.1:5555/goals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(goalsFormValues),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create goal");
+      }
+
+      const createdGoal = await response.json();
+
+      setGoals([...goals, createdGoal]);
+
+      setGoalsFormValues({
+        title: "",
+        description: "",
+        status: "",
+        target_date: "",
+      });
+    } catch (error) {
+      console.error("Error creating goal:", error.message);
+    }
   };
 
   return (
@@ -73,6 +105,21 @@ function GoalsPage() {
         </label>
         <br />
         <label>
+          Category
+          <input
+            type="text"
+            value={goalsFormValues.category}
+            onChange={(e) =>
+              setGoalsFormValues({
+                ...goalsFormValues,
+                category: e.target.value,
+              })
+            }
+          />
+        </label>
+        <br />
+        <label></label>
+        <label>
           Status
           <input
             type="text"
@@ -87,11 +134,11 @@ function GoalsPage() {
           Target Date
           <input
             type="text"
-            value={goalsFormValues.targetDate}
+            value={goalsFormValues.target_date}
             onChange={(e) =>
               setGoalsFormValues({
                 ...goalsFormValues,
-                targetDate: e.target.value,
+                target_date: e.target.value,
               })
             }
           />
