@@ -1,11 +1,17 @@
 import React from "react";
 
-function Goal({ goal: { id, title, description, status, targetDate } }) {
+function Goal({ goal, deleteGoal }) {
+  const handleDeleteGoal = (e) => {
+    fetch(`/goals/${goal.id}`, {
+      method: "DELETE",
+    }).then(() => deleteGoal(goal));
+  };
+
   return (
     <div>
-      {title}, {description}, {status}, {targetDate}
+      {goal.title}, {goal.description}, {goal.status}, {goal.target_date}
       <button>Edit</button>
-      <button>Delete</button>
+      <button onClick={handleDeleteGoal}>Delete</button>
     </div>
   );
 }

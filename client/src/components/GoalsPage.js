@@ -21,27 +21,6 @@ function GoalsPage() {
     fetchGoals().catch(console.error);
   }, []);
 
-  let goalsList = goals.map((goal) => <Goal key={goal.id} goal={goal} />);
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   setGoals([...goals, goalsFormValues]);
-  //   setGoalsFormValues({
-  //     title: "",
-  //     description: "",
-  //     status: "",
-  //     targetDate: "",
-  //   });
-  //   console.log(`The title you entered was: ${goalsFormValues.title}`);
-  //   console.log(
-  //     `The description you entered was: ${goalsFormValues.description}`
-  //   );
-  //   console.log(`The status you entered was: ${goalsFormValues.status}`);
-  //   console.log(
-  //     `The target date you entered was: ${goalsFormValues.targetDate}`
-  //   );
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,20 +37,59 @@ function GoalsPage() {
         throw new Error("Failed to create goal");
       }
 
-      const createdGoal = await response.json();
+      const newGoal = await response.json();
 
-      setGoals([...goals, createdGoal]);
+      setGoals([...goals, newGoal]);
 
       setGoalsFormValues({
         title: "",
         description: "",
         status: "",
+        category: "",
         target_date: "",
       });
     } catch (error) {
       console.error("Error creating goal:", error.message);
     }
   };
+
+  // function handleDeleteGoal(id) {
+  //   console.log(`Deleting goal with id: ${id}`);
+  //   fetch(`/goals/${id}`, { method: "DELETE" })
+  //     .then((response) => {
+  //       console.log("Response status:", response.status);
+  //       if (response.ok) {
+  //         console.log("Response is ok");
+  //         setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
+  //       } else {
+  //         console.error("Failed to delete goal");
+  //         throw new Error("Failed to delete goal");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting goal:", error);
+  //     });
+  // }
+
+  const deleteGoal = (deleteGoal) => {
+    const updatedGoals = goals.filter((goal) => goal.id !== deleteGoal.id);
+    setGoals(updatedGoals);
+  };
+
+  const goalsList = goals.map((goal) => (
+    <Goal
+      key={goal.id}
+      goal={goal}
+      title={goal.title}
+      description={goal.description}
+      status={goal.status}
+      target_date={goal.target_date}
+      deleteGoal={deleteGoal}
+    />
+  ));
+
+  console.log("Goals:", goals);
+  console.log("Goals List:", goalsList);
 
   return (
     <div>
