@@ -15,7 +15,23 @@ function GoalsPage() {
     fetchGoals().catch(console.error);
   }, []);
 
-  console.log(goals);
+  // console.log(goals);
+
+  const toggleGoalForm = (e) => {
+    console.log("Add goal");
+    setShowGoalForm(!showGoalForm);
+  };
+
+  const editGoal = (existingGoal) => {
+    const updatedGoals = goals.map((goal) => {
+      if (goal.id === existingGoal.id) {
+        return existingGoal;
+      } else {
+        return goal;
+      }
+    });
+    setGoals(updatedGoals);
+  };
 
   const deleteGoal = (deleteGoal) => {
     const updatedGoals = goals.filter((goal) => goal.id !== deleteGoal.id);
@@ -38,7 +54,20 @@ function GoalsPage() {
     <div>
       <h1>Goals</h1>
       {goalsList}
-      <GoalForm goals={goals} setGoals={setGoals} />
+      {showGoalForm ? (
+        <>
+          <GoalForm
+            goals={goals}
+            setGoals={setGoals}
+            showGoalForm={showGoalForm}
+            setShowGoalForm={setShowGoalForm}
+          />
+
+          <button onClick={toggleGoalForm}>Cancel</button>
+        </>
+      ) : (
+        <button onClick={toggleGoalForm}>Create New Goal</button>
+      )}
     </div>
   );
 }
