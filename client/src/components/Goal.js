@@ -9,7 +9,8 @@ function Goal({ goal, deleteGoal }) {
 
   return (
     <div>
-      {goal.title}, {goal.description}, {goal.status}, {goal.target_date}
+      {goal.title}, {goal.description}, {goal.category}, {goal.status},{" "}
+      {goal.target_date}
       <button>Edit</button>
       <button onClick={handleDeleteGoal}>Delete</button>
     </div>

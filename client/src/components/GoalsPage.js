@@ -38,7 +38,7 @@ function GoalsPage() {
     <div>
       <h1>Goals</h1>
       {goalsList}
-      <GoalForm />
+      <GoalForm goals={goals} setGoals={setGoals} />
     </div>
   );
 }

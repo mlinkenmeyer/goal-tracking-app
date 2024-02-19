@@ -26,6 +26,7 @@ export const GoalForm = ({ goals, setGoals }) => {
       }
 
       const newGoal = await response.json();
+      console.log(goals);
 
       setGoals([...goals, newGoal]);
 

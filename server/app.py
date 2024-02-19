@@ -83,6 +83,7 @@ def delete_goal(id):
     if goal: 
         db.session.delete(goal)
         db.session.commit()
+        return make_response("Successfully added goal.", 204)
     return make_response({"error": "Goal not found"}, 404)
 
 @app.route("/journals", methods=["GET"])
