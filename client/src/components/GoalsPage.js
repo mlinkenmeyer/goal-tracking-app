@@ -47,6 +47,9 @@ function GoalsPage() {
       status={goal.status}
       target_date={goal.target_date}
       deleteGoal={deleteGoal}
+      showGoalForm={showGoalForm}
+      setShowGoalForm={setShowGoalForm}
+      editGoal={editGoal}
     />
   ));
 
