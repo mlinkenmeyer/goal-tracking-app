@@ -1,34 +1,56 @@
 import React, { useState } from "react";
 
-export const GoalForm = ({ goals, setGoals }) => {
+export const GoalForm = ({
+  goals,
+  setGoals,
+  goal,
+  editGoal,
+  setShowEditForm,
+}) => {
   const [goalsFormValues, setGoalsFormValues] = useState({
-    title: "",
-    description: "",
-    status: "",
-    category: "",
-    target_date: "",
+    title: goal ? goal.title : "",
+    description: goal ? goal.description : "",
+    status: goal ? goal.status : "",
+    category: goal ? goal.category : "",
+    target_date: goal ? goal.target_date : "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmitGoalForm = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/goals", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(goalsFormValues),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create goal");
+      let response;
+      if (goal) {
+        response = await fetch(`/goals/${goal.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(goalsFormValues),
+        });
+      } else {
+        response = await fetch("http://127.0.0.1:5555/goals", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(goalsFormValues),
+        });
       }
 
-      const newGoal = await response.json();
-      //   console.log(goals);
+      if (!response.ok) {
+        throw new Error(
+          goal ? "Failed to update goal" : "Failed to create goal"
+        );
+      }
 
-      setGoals([...goals, newGoal]);
+      const goalData = await response.json();
+      if (goal) {
+        editGoal(goalData);
+        setShowEditForm(false);
+      } else {
+        setGoals([...goals, goalData]);
+      }
 
       setGoalsFormValues({
         title: "",
@@ -38,14 +60,14 @@ export const GoalForm = ({ goals, setGoals }) => {
         target_date: "",
       });
     } catch (error) {
-      console.error("Error creating goal:", error.message);
+      console.error("Error:", error.message);
     }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Create a new goal</h2>
+      <form onSubmit={handleSubmitGoalForm}>
+        <h2>{goal ? "Edit Goal" : "Create a new goal"}</h2>
         <label>
           Title
           <input
@@ -111,7 +133,8 @@ export const GoalForm = ({ goals, setGoals }) => {
           />
         </label>
         <br />
-        <button type="submit">Create Goal</button>
+        <button type="submit">{goal ? "Save" : "Create Goal"}</button>
+        {goal && <button onClick={() => setShowEditForm(false)}>Cancel</button>}
       </form>
     </div>
   );
