@@ -5,6 +5,7 @@ import GoalForm from "./GoalForm";
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
   const [showGoalForm, setShowGoalForm] = useState(false);
+  const [searchGoalsInput, setSearchGoalsInput] = useState("");
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -38,7 +39,16 @@ function GoalsPage() {
     setGoals(updatedGoals);
   };
 
-  const goalsList = goals.map((goal) => (
+  const filteredGoals = goals.filter(
+    (goal) =>
+      goal.title.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.description.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.category.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.status.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.target_date.toLowerCase().includes(searchGoalsInput.toLowerCase())
+  );
+
+  const goalsList = filteredGoals.map((goal) => (
     <Goal
       key={goal.id}
       goal={goal}
@@ -56,6 +66,12 @@ function GoalsPage() {
   return (
     <div>
       <h1>Goals</h1>
+      <input
+        type="text"
+        placeholder="Search goals"
+        value={searchGoalsInput}
+        onChange={(e) => setSearchGoalsInput(e.target.value)}
+      />
       {goalsList}
       {showGoalForm ? (
         <>
