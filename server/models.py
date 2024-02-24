@@ -19,8 +19,8 @@ class Goal(db.Model, SerializerMixin):
     category = db.Column(db.String)
     status = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created_at = db.Column(db.Date, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.Date, default=datetime.datetime.utcnow, onupdate=func.current_timestamp())
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=func.current_timestamp())
 
     serialize_rules = ("-user", "-journals")
 
@@ -71,20 +71,6 @@ class Goal(db.Model, SerializerMixin):
         if status not in valid_types:
             raise ValueError("Invalid Status")
         return status
-    
-    @validates("created_at")
-    def validate(created_at):
-        try:
-            datetime.date.fromisoformat(created_at)
-        except ValueError:
-            raise ValueError("Incorrect date format, should be YYYY-MM-DD")
-        
-    @validates("updated_at")
-    def validate(updated_at):
-        try:
-            datetime.date.fromisoformat(updated_at)
-        except ValueError:
-            raise ValueError("Incorrect date format, should be YYYY-MM-DD")
 
     def __repr__(self):
         return f'<Goal {self.id} {self.title} {self.description} {self.target_date} {self.category} {self.status} {self.created_at} {self.updated_at}'

@@ -5,7 +5,8 @@ export const GoalForm = ({
   setGoals,
   goal,
   editGoal,
-  setShowEditForm,
+  setShowGoalEditForm,
+  setShowGoalForm,
 }) => {
   const [goalsFormValues, setGoalsFormValues] = useState({
     title: goal ? goal.title : "",
@@ -47,9 +48,10 @@ export const GoalForm = ({
       const goalData = await response.json();
       if (goal) {
         editGoal(goalData);
-        setShowEditForm(false);
+        setShowGoalEditForm(false);
       } else {
         setGoals([...goals, goalData]);
+        setShowGoalForm(false);
       }
 
       setGoalsFormValues({
@@ -134,7 +136,9 @@ export const GoalForm = ({
         </label>
         <br />
         <button type="submit">{goal ? "Save" : "Create Goal"}</button>
-        {goal && <button onClick={() => setShowEditForm(false)}>Cancel</button>}
+        {goal && (
+          <button onClick={() => setShowGoalEditForm(false)}>Cancel</button>
+        )}
       </form>
     </div>
   );

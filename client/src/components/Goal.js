@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import GoalForm from "./GoalForm";
 
-function Goal({ goal, deleteGoal, editGoal, showGoalForm, setShowGoalForm }) {
+function Goal({ goal, deleteGoal, editGoal }) {
   const [showGoalEditForm, setShowGoalEditForm] = useState(false);
   const handleDeleteGoal = (e) => {
     fetch(`/goals/${goal.id}`, {
@@ -30,8 +30,8 @@ function Goal({ goal, deleteGoal, editGoal, showGoalForm, setShowGoalForm }) {
       {showGoalEditForm ? (
         <GoalForm
           goal={goal}
-          showGoalForm={showGoalForm}
-          setShowGoalForm={setShowGoalForm}
+          showGoalEditForm={showGoalEditForm}
+          setShowGoalEditForm={setShowGoalEditForm}
           editGoal={editGoal}
           deleteGoal={deleteGoal}
         />
