@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import UserForm from "./UserForm";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 function UserRow({ user, showUserForm, setShowUserForm, editUser, deleteUser }) {
 
     const [showEditForm, setShowEditForm] = useState(false)
 
     const handleEditUser = (e) => {
-        console.log("Editing " + user.name)
         // setShowUserForm(!showUserForm)
         setShowEditForm(false)
         setShowEditForm(!showEditForm)
@@ -33,13 +35,17 @@ function UserRow({ user, showUserForm, setShowUserForm, editUser, deleteUser }) 
             <td><button onClick={(e) => handleDelUser(e)}>Delete</button></td>
         </tr>
         {showEditForm ? 
-        <UserForm 
-            user={user}
-            showEditForm={showEditForm}
-            setShowEditForm={setShowEditForm}
-            editUser={editUser}
-            deleteUser={deleteUser} 
-            />
+        <tr>
+            <td>
+                <UserForm 
+                user={user}
+                showEditForm={showEditForm}
+                setShowEditForm={setShowEditForm}
+                editUser={editUser}
+                deleteUser={deleteUser} 
+                />
+            </td>
+        </tr>
         : null
         }
         </>
