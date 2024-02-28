@@ -153,7 +153,7 @@ class Journal(db.Model, SerializerMixin):
     goal = db.relationship("Goal", back_populates="journals")
     user = association_proxy("goal", "user")
 
-    serialize_rules = ("-goal", "-user")
+    serialize_rules = ("goal", "user")
 
     @validates("journal_entry")
     def validate_description(self, key, journal_entry):

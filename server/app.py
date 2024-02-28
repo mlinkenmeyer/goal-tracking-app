@@ -204,15 +204,19 @@ class JournalById(Resource):
     def patch(self, id):
         try:
             journal = Journal.query.filter_by(id=id).first()
-
             data = request.get_json()
-            for attr in data:
-                setattr(journal, attr, data.get(attr))
-                # setattr(journal, "updated_at", datetime.datetime.utcnow)
-                db.session.commit()
-                return make_response(
-                    {"message": f"Journal {journal.id} has been updated"}, 203
-                )
+
+            if data.get("date"):
+                date_pyformat = datetime.strptime(data.get("date"), "%Y-%m-%d")
+                journal.date = date_pyformat
+            if data.get("goal_id"):
+                journal.goal_id = data.get("goal_id")
+            if data.get("journal_entry"):
+                journal.journal_entry = data.get("journal_entry")
+            db.session.commit()
+            return make_response(
+                journal.to_dict(), 203
+            )
         except Exception as e:
             return make_response(
                 {"error": str(e)}, 500
