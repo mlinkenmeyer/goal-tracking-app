@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import GoalForm from "./GoalForm";
 
-function Goal({ goal: { id, title, description, status, targetDate } }) {
+function Goal({ goal, deleteGoal, editGoal }) {
+  const [showGoalEditForm, setShowGoalEditForm] = useState(false);
+  const handleDeleteGoal = (e) => {
+    fetch(`/goals/${goal.id}`, {
+      method: "DELETE",
+    }).then(() => deleteGoal(goal));
+  };
+
+  const handleEditGoal = (e) => {
+    console.log("Editing " + goal.title);
+    setShowGoalEditForm(true);
+    setShowGoalEditForm(!showGoalEditForm);
+  };
+
   return (
-    <div>
-      {title}, {description}, {status}, {targetDate}
-      <button>Edit</button>
-      <button>Delete</button>
-    </div>
+    <>
+      <div>
+        {goal.title}, {goal.description}, {goal.category}, {goal.status},{" "}
+        {goal.target_date}
+        {showGoalEditForm ? (
+          <button onClick={handleEditGoal}>Cancel</button>
+        ) : (
+          <button onClick={handleEditGoal}>Edit</button>
+        )}
+        <button onClick={handleDeleteGoal}>Delete</button>
+      </div>
+      {showGoalEditForm ? (
+        <GoalForm
+          goal={goal}
+          showGoalEditForm={showGoalEditForm}
+          setShowGoalEditForm={setShowGoalEditForm}
+          editGoal={editGoal}
+          deleteGoal={deleteGoal}
+        />
+      ) : null}
+    </>
   );
 }
 

@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Goal from "./Goal";
+import GoalForm from "./GoalForm";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
-
-  const [goalsFormValues, setGoalsFormValues] = useState({
-    title: "",
-    description: "",
-    status: "",
-    targetDate: "",
-  });
+  const [showGoalForm, setShowGoalForm] = useState(false);
+  const [searchGoalsInput, setSearchGoalsInput] = useState("");
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -20,85 +16,77 @@ function GoalsPage() {
     fetchGoals().catch(console.error);
   }, []);
 
-  let goalsList = goals.map((goal) => <Goal key={goal.id} goal={goal} />);
+  // console.log(goals);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setGoals([...goals, goalsFormValues]);
-    setGoalsFormValues({
-      title: "",
-      description: "",
-      status: "",
-      targetDate: "",
-    });
-    console.log(`The title you entered was: ${goalsFormValues.title}`);
-    console.log(
-      `The description you entered was: ${goalsFormValues.description}`
-    );
-    console.log(`The status you entered was: ${goalsFormValues.status}`);
-    console.log(
-      `The target date you entered was: ${goalsFormValues.targetDate}`
-    );
+  const toggleGoalForm = (e) => {
+    console.log("Add goal");
+    setShowGoalForm(!showGoalForm);
   };
+
+  const editGoal = (existingGoal) => {
+    const updatedGoals = goals.map((goal) => {
+      if (goal.id === existingGoal.id) {
+        return existingGoal;
+      } else {
+        return goal;
+      }
+    });
+    setGoals(updatedGoals);
+  };
+
+  const deleteGoal = (deleteGoal) => {
+    const updatedGoals = goals.filter((goal) => goal.id !== deleteGoal.id);
+    setGoals(updatedGoals);
+  };
+
+  const filteredGoals = goals.filter(
+    (goal) =>
+      goal.title.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.description.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.category.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.status.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
+      goal.target_date.toLowerCase().includes(searchGoalsInput.toLowerCase())
+  );
+
+  const goalsList = filteredGoals.map((goal) => (
+    <Goal
+      key={goal.id}
+      goal={goal}
+      title={goal.title}
+      description={goal.description}
+      status={goal.status}
+      target_date={goal.target_date}
+      deleteGoal={deleteGoal}
+      showGoalForm={showGoalForm}
+      setShowGoalForm={setShowGoalForm}
+      editGoal={editGoal}
+    />
+  ));
 
   return (
     <div>
       <h1>Goals</h1>
+      <input
+        type="text"
+        placeholder="Search goals"
+        value={searchGoalsInput}
+        onChange={(e) => setSearchGoalsInput(e.target.value)}
+      />
       {goalsList}
-      <form onSubmit={handleSubmit}>
-        <h2>Create a new goal</h2>
-        <label>
-          Title
-          <input
-            type="text"
-            value={goalsFormValues.title}
-            onChange={(e) =>
-              setGoalsFormValues({ ...goalsFormValues, title: e.target.value })
-            }
+      {showGoalForm ? (
+        <>
+          <GoalForm
+            goals={goals}
+            setGoals={setGoals}
+            showGoalForm={showGoalForm}
+            setShowGoalForm={setShowGoalForm}
           />
-        </label>
-        <br />
-        <label>
-          Description
-          <input
-            type="text"
-            value={goalsFormValues.description}
-            onChange={(e) =>
-              setGoalsFormValues({
-                ...goalsFormValues,
-                description: e.target.value,
-              })
-            }
-          />
-        </label>
-        <br />
-        <label>
-          Status
-          <input
-            type="text"
-            value={goalsFormValues.status}
-            onChange={(e) =>
-              setGoalsFormValues({ ...goalsFormValues, status: e.target.value })
-            }
-          />
-        </label>
-        <br />
-        <label>
-          Target Date
-          <input
-            type="text"
-            value={goalsFormValues.targetDate}
-            onChange={(e) =>
-              setGoalsFormValues({
-                ...goalsFormValues,
-                targetDate: e.target.value,
-              })
-            }
-          />
-        </label>
-        <br />
-        <button type="submit">Add Goal</button>
-      </form>
+
+          <button onClick={toggleGoalForm}>Cancel</button>
+        </>
+      ) : (
+        <button onClick={toggleGoalForm}>Create New Goal</button>
+      )}
     </div>
   );
 }
