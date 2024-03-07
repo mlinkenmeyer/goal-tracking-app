@@ -1,61 +1,55 @@
 import React, { useState } from "react";
 import UserForm from "./UserForm";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-function UserRow({
-  user,
-  showUserForm,
-  setShowUserForm,
-  editUser,
-  deleteUser,
-}) {
-  const [showEditForm, setShowEditForm] = useState(false);
+function UserRow({ user, showUserForm, setShowUserForm, editUser, deleteUser }) {
 
-  const handleEditUser = (e) => {
-    // setShowUserForm(!showUserForm)
-    setShowEditForm(false);
-    setShowEditForm(!showEditForm);
-  };
+    const [showEditForm, setShowEditForm] = useState(false)
 
-  const handleDelUser = (e) => {
-    fetch(`/users/${user.id}`, {
-      method: "DELETE",
-    }).then(() => deleteUser(user));
-  };
+    const handleEditUser = (e) => {
+        // setShowUserForm(!showUserForm)
+        setShowEditForm(false)
+        setShowEditForm(!showEditForm)
+    }
 
-  return (
-    <>
-      <tr key={user.id}>
-        <td>{user.name}</td>
-        <td>{user.email}</td>
-        {showEditForm ? (
-          <td>
-            <button onClick={handleEditUser}>Cancel</button>
-          </td>
-        ) : (
-          <td>
-            <button onClick={handleEditUser}>Edit</button>
-          </td>
-        )}
+    const handleDelUser = (e) => {
+        fetch(`/users/${user.id}`, {
+            method: "DELETE"
+        })
+        .then(() => deleteUser(user))
+    }
 
-        <td>
-          <button onClick={(e) => handleDelUser(e)}>Delete</button>
-        </td>
-      </tr>
-      {showEditForm ? (
-        <tr>
-          <td>
-            <UserForm
-              user={user}
-              showEditForm={showEditForm}
-              setShowEditForm={setShowEditForm}
-              editUser={editUser}
-              deleteUser={deleteUser}
-            />
-          </td>
+    return (
+        <>
+        <tr key={user.id}>
+            <td>{user.name}</td>
+            <td>{user.email}</td>
+            {showEditForm ?
+            <td><button onClick={handleEditUser}>Cancel</button></td>
+            :
+            <td><button onClick={handleEditUser}>Edit</button></td>
+            }
+
+            <td><button onClick={(e) => handleDelUser(e)}>Delete</button></td>
         </tr>
-      ) : null}
-    </>
-  );
+        {showEditForm ? 
+        <tr>
+            <td>
+                <UserForm 
+                user={user}
+                showEditForm={showEditForm}
+                setShowEditForm={setShowEditForm}
+                editUser={editUser}
+                deleteUser={deleteUser} 
+                />
+            </td>
+        </tr>
+        : null
+        }
+        </>
+    )
 }
 
 export default UserRow;
