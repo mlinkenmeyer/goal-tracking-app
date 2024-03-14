@@ -1,82 +1,99 @@
 import React, { useState } from "react";
+import { useFormik } from "formik";
+import { Formik, Field, Form } from 'formik';
+import * as yup from "yup";
 
 function JournalForm({ addEntry, journal, editEntry, setToggleJournalForm, setToggleEditEntry }) {
 
+    const today = new Date()
+    const todayMonth = today.getMonth()+1
+    const todayCleanDate = today.getFullYear()+"-"+(todayMonth < 10 ? "0" + todayMonth : todayMonth)+"-"+(today.getDate() < 10 ? "0" + today.getDate() : today.getDate())
+
     const initialValuesEntry = {
-        date: "",
-        goal_id: "",
-        journal_entry: ""
+        date: journal ? journal.date : todayCleanDate,
+        goal_id: journal ? journal.goal_id : "",
+        journal_entry: journal ? journal.journal_entry : ""
     }
 
-    const [journalEntry, setJournalEntry] = useState(initialValuesEntry)
-
-    const handleAddJournalEntry = (e) => {
-        e.preventDefault()
+    const handleAddJournalEntry = (values) => {
+        console.log(values)
         fetch('/journals', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json"
             },
-            body: JSON.stringify(journalEntry)
+            body: JSON.stringify(values)
         })
         .then((r) => r.json())
         .then((newEntry) => addEntry(newEntry))
-        setJournalEntry(initialValuesEntry)
         setToggleJournalForm(false)
     }
 
-    const handleEditJournalEntry = (e) => {
-        e.preventDefault()
+    const handleEditJournalEntry = (values) => {
         fetch(`/journals/${journal.id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json"
             },
-            body: JSON.stringify(journalEntry)
+            body: JSON.stringify(values)
         })
         .then((r) => r.json())
         .then((updatedEntry) => editEntry(updatedEntry))
-        setJournalEntry(initialValuesEntry)
         setToggleEditEntry(false)
     }
 
-    const handleSubmitEntry = (e) => {
-        e.preventDefault()
-        journal ? handleEditJournalEntry(e) : handleAddJournalEntry(e) 
-        // journal ? console.log("Edit") : console.log("Add")
-        // console.log(journalEntry)
-    }
+    const formSchema = yup.object().shape({
+        date: yup.string().required("Must be a valid date"),
+        goal_id: yup.string().required("Must enter a valid goal ID"),
+        journal_entry: yup.string().required("Entries must be within alotted amount of characters"),
+    });
+
+    const formik = useFormik({
+        initialValues: initialValuesEntry,
+        validationSchema: formSchema,
+        onSubmit: values => {
+            journal ? handleEditJournalEntry(values) : handleAddJournalEntry(values) 
+        }
+    })
+
+    const date = new Date(formik.values.date)
+    const month = date.getMonth()+1
+    const cleanDate = date.getFullYear()+"-"+(month < 10 ? "0" + month : month)+"-"+(date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
 
     return (
         <div>
-            <form onSubmit={handleSubmitEntry}>
+            <form onSubmit={formik.handleSubmit}>
                 <label>Date</label>
                 <input 
                     id="date" 
                     type="date"
-                    value={journalEntry.date}
-                    onChange={(e) => setJournalEntry({...journalEntry, ["date"]: e.target.value})}
+                    name="date"
+                    // value={journal ? cleanDate : todayCleanDate}
+                    value={formik.values.date}
+                    onChange={formik.handleChange}
                     />
                     <br />
                 <label>Goal Id</label>
                 <input 
-                    id="goal-id" 
+                    id="goal_id" 
                     type="text"
-                    value={journalEntry.goal_id}
-                    onChange={(e) => setJournalEntry({...journalEntry, ["goal_id"]: e.target.value})}
+                    name="goal_id"
+                    value={formik.values.goal_id}
+                    onChange={formik.handleChange}
                     />
                     <br />
                 <label>Journal Entry</label>
                 <input 
                     id="journal_entry" 
                     type="text"
-                    value={journalEntry.journal_entry}
-                    onChange={(e) => setJournalEntry({...journalEntry, ["journal_entry"]: e.target.value})}
+                    name="journal_entry"
+                    value={formik.values.journal_entry}
+                    onChange={formik.handleChange}
                     />
                     <br />
-                <button>Submit</button>
+                <button type="submit">Submit</button>
             </form>
         </div>
     )

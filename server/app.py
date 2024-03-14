@@ -11,12 +11,13 @@ from datetime import datetime
 from dateutil import parser
 
 # Local imports
-from config import app, db, api
+from config import app, db, api, CORS
 
 # Add your model imports
 from models import Goal, Journal, User
 
 # Views go here!
+CORS(app)
 
 @app.route('/')
 def index():
