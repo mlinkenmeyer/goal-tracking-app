@@ -8,7 +8,7 @@ function Journals() {
 
     const [journals, setJournals] = useState([])
     const [search, setSearch] = useState("")
-    const [sortBy, setSortBy] = useState("idAscend")
+    const [sortBy, setSortBy] = useState("id-ascend")
     const [toggleJournalForm, setToggleJournalForm] = useState(false)
 
     useEffect(() => {
@@ -40,19 +40,21 @@ function Journals() {
     const sortedEntries = (sortBy) => {
         setSortBy(sortBy)
     }
-
+    
     const searchedEntries = journals.filter((journal) =>
             journal.journal_entry.toLowerCase().includes(search.toLowerCase())
         )
         .sort((entry1, entry2) => {
-            if (sortBy === "idAscent") {
+            let date1 = new Date(entry1.date)
+            let date2 = new Date(entry2.date)
+            if (sortBy === "id-ascend") {
                 return entry1.id - entry2.id
-            }  if (sortBy === "idDescent") {
+            } if (sortBy === "id-descend") {
                 return entry2.id - entry1.id
-            // }  if (sortBy === "old-new") {
-            //     return entry1.date - entry2.date
-            // }  if (sortBy === "new-old") {
-            //     return entry2.date - entry1.date
+            }  if (sortBy === "old-new") {
+                return date1 - date2
+            }  if (sortBy === "new-old") {
+                return date2 - date1
             }  if (sortBy === "goal-id") {
                 return entry1.goal_id - entry2.goal_id
             }

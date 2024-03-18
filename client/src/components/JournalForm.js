@@ -4,19 +4,22 @@ import { Formik, Field, Form } from 'formik';
 import * as yup from "yup";
 
 function JournalForm({ addEntry, journal, editEntry, setToggleJournalForm, setToggleEditEntry }) {
+    
+    const date = journal ? new Date(journal.date) : ""
+    const month = journal ? date.getMonth()+1 : ""
+    const cleanDate = journal ? date.getFullYear()+"-"+(month < 10 ? "0" + month : month)+"-"+(date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) : ""
 
     const today = new Date()
     const todayMonth = today.getMonth()+1
     const todayCleanDate = today.getFullYear()+"-"+(todayMonth < 10 ? "0" + todayMonth : todayMonth)+"-"+(today.getDate() < 10 ? "0" + today.getDate() : today.getDate())
 
     const initialValuesEntry = {
-        date: journal ? journal.date : todayCleanDate,
+        date: journal ? cleanDate : todayCleanDate,
         goal_id: journal ? journal.goal_id : "",
         journal_entry: journal ? journal.journal_entry : ""
     }
 
     const handleAddJournalEntry = (values) => {
-        console.log(values)
         fetch('/journals', {
             method: "POST",
             headers: {
@@ -57,10 +60,6 @@ function JournalForm({ addEntry, journal, editEntry, setToggleJournalForm, setTo
             journal ? handleEditJournalEntry(values) : handleAddJournalEntry(values) 
         }
     })
-
-    const date = new Date(formik.values.date)
-    const month = date.getMonth()+1
-    const cleanDate = date.getFullYear()+"-"+(month < 10 ? "0" + month : month)+"-"+(date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
 
     return (
         <div>
