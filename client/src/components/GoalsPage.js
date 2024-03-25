@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Goal from "./Goal";
 import GoalForm from "./GoalForm";
+import { SortableContext } from "@dnd-kit/sortable";
 
-function GoalsPage() {
-  const [goals, setGoals] = useState([]);
+function GoalsPage({ goals, setGoals }) {
+  // const [goals, setGoals] = useState([]);
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [searchGoalsInput, setSearchGoalsInput] = useState("");
 
   // fetch goals from API endpoint
-  useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5555/goals");
-        const goalsArray = await response.json();
-        setGoals(goalsArray);
-      } catch (error) {
-        console.error("Error fetching goals:", error);
-      }
-    };
-    fetchGoals();
-  }, []);
+  // useEffect(() => {
+  //   const fetchGoals = async () => {
+  //     try {
+  //       const response = await fetch("http://127.0.0.1:5555/goals");
+  //       const goalsArray = await response.json();
+  //       setGoals(goalsArray);
+  //     } catch (error) {
+  //       console.error("Error fetching goals:", error);
+  //     }
+  //   };
+  //   fetchGoals();
+  // }, []);
 
   const toggleGoalForm = () => {
     setShowGoalForm(!showGoalForm);
@@ -83,33 +84,35 @@ function GoalsPage() {
   });
   return (
     <div>
-      <h1>Goals</h1>
-      <input
-        type="text"
-        placeholder="Search goals"
-        value={searchGoalsInput}
-        onChange={(e) => setSearchGoalsInput(e.target.value)}
-      />
-      <div style={{ display: "flex" }}>
-        {goalColumns.map((column, index) => (
-          <div key={index} style={{ marginRight: "20px" }}>
-            {column}
-          </div>
-        ))}
-      </div>
-      {showGoalForm ? (
-        <>
-          <GoalForm
-            goals={goals}
-            setGoals={setGoals}
-            showGoalForm={showGoalForm}
-            setShowGoalForm={setShowGoalForm}
-          />
-          <button onClick={toggleGoalForm}>Cancel</button>
-        </>
-      ) : (
-        <button onClick={toggleGoalForm}>Create New Goal</button>
-      )}
+      <SortableContext items={goals}>
+        <h1>Goals</h1>
+        <input
+          type="text"
+          placeholder="Search goals"
+          value={searchGoalsInput}
+          onChange={(e) => setSearchGoalsInput(e.target.value)}
+        />
+        <div style={{ display: "flex" }}>
+          {goalColumns.map((column, index) => (
+            <div key={index} style={{ marginRight: "20px" }}>
+              {column}
+            </div>
+          ))}
+        </div>
+        {showGoalForm ? (
+          <>
+            <GoalForm
+              goals={goals}
+              setGoals={setGoals}
+              showGoalForm={showGoalForm}
+              setShowGoalForm={setShowGoalForm}
+            />
+            <button onClick={toggleGoalForm}>Cancel</button>
+          </>
+        ) : (
+          <button onClick={toggleGoalForm}>Create New Goal</button>
+        )}
+      </SortableContext>
     </div>
   );
 }

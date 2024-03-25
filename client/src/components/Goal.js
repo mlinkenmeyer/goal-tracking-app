@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import GoalForm from "./GoalForm";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function Goal({ goal, deleteGoal, editGoal }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: goal.id });
+
+  const style = { transition, transform: CSS.Transform.toString(transform) };
+
   const [showGoalEditForm, setShowGoalEditForm] = useState(false);
   const handleDeleteGoal = (e) => {
     fetch(`/goals/${goal.id}`, {
@@ -17,10 +24,16 @@ function Goal({ goal, deleteGoal, editGoal }) {
 
   return (
     <>
-      <div className="goal-container">
+      <div
+        className="goal-container"
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        style={style}
+      >
         <div>
-          {goal.title}, {goal.description}, {goal.category}, {goal.status},{" "}
-          {goal.target_date}
+          Goal id = {goal.id} Title: {goal.title}, {goal.description},{" "}
+          {goal.category}, {goal.status}, {goal.target_date}
         </div>
         <div>
           {showGoalEditForm ? (
