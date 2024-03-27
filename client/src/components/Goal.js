@@ -28,7 +28,7 @@ function Goal({ goal, deleteGoal, editGoal }) {
         className="goal-container"
         ref={setNodeRef}
         {...attributes}
-        {...listeners}
+        // {...listeners} // breaks edit button
         style={style}
       >
         <div>

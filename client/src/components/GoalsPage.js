@@ -1,26 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Goal from "./Goal";
 import GoalForm from "./GoalForm";
-import { SortableContext } from "@dnd-kit/sortable";
+import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-function GoalsPage({ goals, setGoals }) {
-  // const [goals, setGoals] = useState([]);
+function GoalsPage() {
+  const [goals, setGoals] = useState([]);
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [searchGoalsInput, setSearchGoalsInput] = useState("");
 
   // fetch goals from API endpoint
-  // useEffect(() => {
-  //   const fetchGoals = async () => {
-  //     try {
-  //       const response = await fetch("http://127.0.0.1:5555/goals");
-  //       const goalsArray = await response.json();
-  //       setGoals(goalsArray);
-  //     } catch (error) {
-  //       console.error("Error fetching goals:", error);
-  //     }
-  //   };
-  //   fetchGoals();
-  // }, []);
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5555/goals");
+        const goalsArray = await response.json();
+        setGoals(goalsArray);
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      }
+    };
+    fetchGoals();
+  }, []);
 
   const toggleGoalForm = () => {
     setShowGoalForm(!showGoalForm);
@@ -60,59 +67,80 @@ function GoalsPage({ goals, setGoals }) {
 
   const goalColumnOrder = ["not yet started", "in progress", "complete"];
 
-  const goalColumns = goalColumnOrder.map((status) => {
-    const goalsForStatus = groupedGoalsByStatus[status.toLowerCase()] || [];
+  const onDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id === over.id) {
+      return;
+    }
+    setGoals((goals) => {
+      const oldIndex = goals.findIndex((user) => user.id === active.id);
+      const newIndex = goals.findIndex((user) => user.id === over.id);
+      return arrayMove(goals, oldIndex, newIndex);
+    });
+  };
+
+  const SortableGoal = ({ goal }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: goal.id });
+    const style = {
+      transition,
+      transform: CSS.Transform.toString(transform),
+    };
+
     return (
-      <div key={status}>
-        <h2>{status}</h2>
-        {goalsForStatus.map((goal) => (
-          <Goal
-            key={goal.id}
-            goal={goal}
-            title={goal.title}
-            description={goal.description}
-            status={goal.status}
-            target_date={goal.target_date}
-            deleteGoal={deleteGoal}
-            showGoalForm={showGoalForm}
-            setShowGoalForm={setShowGoalForm}
-            editGoal={editGoal}
-          />
-        ))}
+      <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
+        <Goal
+          key={goal.id}
+          goal={goal}
+          deleteGoal={deleteGoal}
+          showGoalForm={showGoalForm}
+          setShowGoalForm={setShowGoalForm}
+          editGoal={editGoal}
+        />
       </div>
     );
-  });
+  };
+
   return (
     <div>
-      <SortableContext items={goals}>
-        <h1>Goals</h1>
-        <input
-          type="text"
-          placeholder="Search goals"
-          value={searchGoalsInput}
-          onChange={(e) => setSearchGoalsInput(e.target.value)}
-        />
+      <h1>Goals</h1>
+      <input
+        type="text"
+        placeholder="Search goals"
+        value={searchGoalsInput}
+        onChange={(e) => setSearchGoalsInput(e.target.value)}
+      />
+      <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <div style={{ display: "flex" }}>
-          {goalColumns.map((column, index) => (
+          {goalColumnOrder.map((status, index) => (
             <div key={index} style={{ marginRight: "20px" }}>
-              {column}
+              <h2>{status}</h2>
+              <SortableContext
+                items={groupedGoalsByStatus[status.toLowerCase()] || []}
+                strategy={verticalListSortingStrategy}
+              >
+                {groupedGoalsByStatus[status.toLowerCase()] &&
+                  groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
+                    <SortableGoal key={goal.id} goal={goal}></SortableGoal>
+                  ))}
+              </SortableContext>
             </div>
           ))}
         </div>
-        {showGoalForm ? (
-          <>
-            <GoalForm
-              goals={goals}
-              setGoals={setGoals}
-              showGoalForm={showGoalForm}
-              setShowGoalForm={setShowGoalForm}
-            />
-            <button onClick={toggleGoalForm}>Cancel</button>
-          </>
-        ) : (
-          <button onClick={toggleGoalForm}>Create New Goal</button>
-        )}
-      </SortableContext>
+      </DndContext>
+      {showGoalForm ? (
+        <>
+          <GoalForm
+            goals={goals}
+            setGoals={setGoals}
+            showGoalForm={showGoalForm}
+            setShowGoalForm={setShowGoalForm}
+          />
+          <button onClick={toggleGoalForm}>Cancel</button>
+        </>
+      ) : (
+        <button onClick={toggleGoalForm}>Create New Goal</button>
+      )}
     </div>
   );
 }
