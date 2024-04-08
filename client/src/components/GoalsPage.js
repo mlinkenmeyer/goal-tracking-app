@@ -59,28 +59,6 @@ function GoalsPage() {
 
   const goalColumnOrder = ["not yet started", "in progress", "complete"];
 
-  const goalColumns = goalColumnOrder.map((status) => {
-    const goalsForStatus = groupedGoalsByStatus[status.toLowerCase()] || [];
-    return (
-      <div key={status}>
-        <h2>{status}</h2>
-        {goalsForStatus.map((goal) => (
-          <Goal
-            key={goal.id}
-            goal={goal}
-            title={goal.title}
-            description={goal.description}
-            status={goal.status}
-            target_date={goal.target_date}
-            deleteGoal={deleteGoal}
-            showGoalForm={showGoalForm}
-            setShowGoalForm={setShowGoalForm}
-            editGoal={editGoal}
-          />
-        ))}
-      </div>
-    );
-  });
   return (
     <div>
       <h1>Goals</h1>
@@ -90,13 +68,26 @@ function GoalsPage() {
         value={searchGoalsInput}
         onChange={(e) => setSearchGoalsInput(e.target.value)}
       />
+
       <div style={{ display: "flex" }}>
-        {goalColumns.map((column, index) => (
+        {goalColumnOrder.map((status, index) => (
           <div key={index} style={{ marginRight: "20px" }}>
-            {column}
+            <h2>{status}</h2>
+            {groupedGoalsByStatus[status.toLowerCase()] &&
+              groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
+                <Goal
+                  key={goal.id}
+                  goal={goal}
+                  deleteGoal={deleteGoal}
+                  showGoalForm={showGoalForm}
+                  setShowGoalForm={setShowGoalForm}
+                  editGoal={editGoal}
+                />
+              ))}
           </div>
         ))}
       </div>
+
       {showGoalForm ? (
         <>
           <GoalForm

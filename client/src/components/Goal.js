@@ -19,8 +19,8 @@ function Goal({ goal, deleteGoal, editGoal }) {
     <>
       <div className="goal-container">
         <div>
-          {goal.title}, {goal.description}, {goal.category}, {goal.status},{" "}
-          {goal.target_date}
+          Goal id = {goal.id} Title: {goal.title}, {goal.description},{" "}
+          {goal.category}, {goal.status}, {goal.target_date}
         </div>
         <div>
           {showGoalEditForm ? (
