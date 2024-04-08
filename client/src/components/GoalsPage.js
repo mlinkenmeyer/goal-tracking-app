@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Goal from "./Goal";
 import GoalForm from "./GoalForm";
-import { closestCenter, DndContext } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -67,40 +59,6 @@ function GoalsPage() {
 
   const goalColumnOrder = ["not yet started", "in progress", "complete"];
 
-  const onDragEnd = (event) => {
-    const { active, over } = event;
-    if (active.id === over.id) {
-      return;
-    }
-    setGoals((goals) => {
-      const oldIndex = goals.findIndex((user) => user.id === active.id);
-      const newIndex = goals.findIndex((user) => user.id === over.id);
-      return arrayMove(goals, oldIndex, newIndex);
-    });
-  };
-
-  const SortableGoal = ({ goal }) => {
-    const { attributes, listeners, setNodeRef, transform, transition } =
-      useSortable({ id: goal.id });
-    const style = {
-      transition,
-      transform: CSS.Transform.toString(transform),
-    };
-
-    return (
-      <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
-        <Goal
-          key={goal.id}
-          goal={goal}
-          deleteGoal={deleteGoal}
-          showGoalForm={showGoalForm}
-          setShowGoalForm={setShowGoalForm}
-          editGoal={editGoal}
-        />
-      </div>
-    );
-  };
-
   return (
     <div>
       <h1>Goals</h1>
@@ -110,24 +68,26 @@ function GoalsPage() {
         value={searchGoalsInput}
         onChange={(e) => setSearchGoalsInput(e.target.value)}
       />
-      <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-        <div style={{ display: "flex" }}>
-          {goalColumnOrder.map((status, index) => (
-            <div key={index} style={{ marginRight: "20px" }}>
-              <h2>{status}</h2>
-              <SortableContext
-                items={groupedGoalsByStatus[status.toLowerCase()] || []}
-                strategy={verticalListSortingStrategy}
-              >
-                {groupedGoalsByStatus[status.toLowerCase()] &&
-                  groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
-                    <SortableGoal key={goal.id} goal={goal}></SortableGoal>
-                  ))}
-              </SortableContext>
-            </div>
-          ))}
-        </div>
-      </DndContext>
+
+      <div style={{ display: "flex" }}>
+        {goalColumnOrder.map((status, index) => (
+          <div key={index} style={{ marginRight: "20px" }}>
+            <h2>{status}</h2>
+            {groupedGoalsByStatus[status.toLowerCase()] &&
+              groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
+                <Goal
+                  key={goal.id}
+                  goal={goal}
+                  deleteGoal={deleteGoal}
+                  showGoalForm={showGoalForm}
+                  setShowGoalForm={setShowGoalForm}
+                  editGoal={editGoal}
+                />
+              ))}
+          </div>
+        ))}
+      </div>
+
       {showGoalForm ? (
         <>
           <GoalForm
