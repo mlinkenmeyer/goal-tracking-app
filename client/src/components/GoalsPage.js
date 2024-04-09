@@ -7,38 +7,37 @@ function GoalsPage() {
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [searchGoalsInput, setSearchGoalsInput] = useState("");
 
+  // fetch goals from API endpoint
   useEffect(() => {
     const fetchGoals = async () => {
-      const response = await fetch("http://127.0.0.1:5555/goals");
-      const goalsArray = await response.json();
-      setGoals(goalsArray);
+      try {
+        const response = await fetch("http://127.0.0.1:5555/goals");
+        const goalsArray = await response.json();
+        setGoals(goalsArray);
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      }
     };
-    fetchGoals().catch(console.error);
+    fetchGoals();
   }, []);
 
-  // console.log(goals);
-
-  const toggleGoalForm = (e) => {
-    console.log("Add goal");
+  const toggleGoalForm = () => {
     setShowGoalForm(!showGoalForm);
   };
 
   const editGoal = (existingGoal) => {
-    const updatedGoals = goals.map((goal) => {
-      if (goal.id === existingGoal.id) {
-        return existingGoal;
-      } else {
-        return goal;
-      }
-    });
+    const updatedGoals = goals.map((goal) =>
+      goal.id === existingGoal.id ? existingGoal : goal
+    );
     setGoals(updatedGoals);
   };
 
-  const deleteGoal = (deleteGoal) => {
-    const updatedGoals = goals.filter((goal) => goal.id !== deleteGoal.id);
+  const deleteGoal = (deletedGoal) => {
+    const updatedGoals = goals.filter((goal) => goal.id !== deletedGoal.id);
     setGoals(updatedGoals);
   };
 
+  // filters the goals based on search input
   const filteredGoals = goals.filter(
     (goal) =>
       goal.title.toLowerCase().includes(searchGoalsInput.toLowerCase()) ||
@@ -48,20 +47,17 @@ function GoalsPage() {
       goal.target_date.toLowerCase().includes(searchGoalsInput.toLowerCase())
   );
 
-  const goalsList = filteredGoals.map((goal) => (
-    <Goal
-      key={goal.id}
-      goal={goal}
-      title={goal.title}
-      description={goal.description}
-      status={goal.status}
-      target_date={goal.target_date}
-      deleteGoal={deleteGoal}
-      showGoalForm={showGoalForm}
-      setShowGoalForm={setShowGoalForm}
-      editGoal={editGoal}
-    />
-  ));
+  const groupedGoalsByStatus = {};
+
+  filteredGoals.forEach((goal) => {
+    const goalStatus = goal.status.toLowerCase();
+    if (!groupedGoalsByStatus[goalStatus]) {
+      groupedGoalsByStatus[goalStatus] = [];
+    }
+    groupedGoalsByStatus[goalStatus].push(goal);
+  });
+
+  const goalColumnOrder = ["not yet started", "in progress", "complete"];
 
   return (
     <div>
@@ -72,7 +68,26 @@ function GoalsPage() {
         value={searchGoalsInput}
         onChange={(e) => setSearchGoalsInput(e.target.value)}
       />
-      {goalsList}
+
+      <div style={{ display: "flex" }}>
+        {goalColumnOrder.map((status, index) => (
+          <div key={index} style={{ marginRight: "20px" }}>
+            <h2>{status}</h2>
+            {groupedGoalsByStatus[status.toLowerCase()] &&
+              groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
+                <Goal
+                  key={goal.id}
+                  goal={goal}
+                  deleteGoal={deleteGoal}
+                  showGoalForm={showGoalForm}
+                  setShowGoalForm={setShowGoalForm}
+                  editGoal={editGoal}
+                />
+              ))}
+          </div>
+        ))}
+      </div>
+
       {showGoalForm ? (
         <>
           <GoalForm
@@ -81,7 +96,6 @@ function GoalsPage() {
             showGoalForm={showGoalForm}
             setShowGoalForm={setShowGoalForm}
           />
-
           <button onClick={toggleGoalForm}>Cancel</button>
         </>
       ) : (

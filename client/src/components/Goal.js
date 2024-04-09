@@ -17,17 +17,21 @@ function Goal({ goal, deleteGoal, editGoal }) {
 
   return (
     <>
-      <div>
-        {goal.title}, {goal.description}, {goal.category}, {goal.status},{" "}
-        {goal.target_date}
-        {showGoalEditForm ? (
-          <button onClick={handleEditGoal}>Cancel</button>
-        ) : (
-          <button onClick={handleEditGoal}>Edit</button>
-        )}
-        <button onClick={handleDeleteGoal}>Delete</button>
+      <div className="goal-container">
+        <div>
+          Goal id = {goal.id} Title: {goal.title}, {goal.description},{" "}
+          {goal.category}, {goal.status}, {goal.target_date}
+        </div>
+        <div>
+          {showGoalEditForm ? (
+            <button onClick={handleEditGoal}>Cancel</button>
+          ) : (
+            <button onClick={handleEditGoal}>Edit</button>
+          )}
+          <button onClick={handleDeleteGoal}>Delete</button>
+        </div>
       </div>
-      {showGoalEditForm ? (
+      {showGoalEditForm && (
         <GoalForm
           goal={goal}
           showGoalEditForm={showGoalEditForm}
@@ -35,7 +39,7 @@ function Goal({ goal, deleteGoal, editGoal }) {
           editGoal={editGoal}
           deleteGoal={deleteGoal}
         />
-      ) : null}
+      )}
     </>
   );
 }
