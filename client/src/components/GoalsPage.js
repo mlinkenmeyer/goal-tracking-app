@@ -8,7 +8,6 @@ import "@fontsource/roboto/700.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -65,7 +64,7 @@ function GoalsPage() {
     groupedGoalsByStatus[goalStatus].push(goal);
   });
 
-  const goalColumnOrder = ["not yet started", "in progress", "complete"];
+  const goalColumnOrder = ["NOT YET STARTED", "IN PROGRESS", "COMPLETE"];
 
   return (
     <div>
@@ -83,7 +82,11 @@ function GoalsPage() {
             <h2>{status}</h2>
             {groupedGoalsByStatus[status.toLowerCase()] &&
               groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
-                <Card key={goal.id} style={{ marginBottom: "10px" }}>
+                <Card
+                  key={goal.id}
+                  style={{ marginBottom: "10px" }}
+                  variant="outlined"
+                >
                   <CardContent>
                     <Goal
                       key={goal.id}
