@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import GoalForm from "./GoalForm";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Goal({ goal, deleteGoal, editGoal }) {
   const [showGoalEditForm, setShowGoalEditForm] = useState(false);
@@ -35,13 +36,7 @@ function Goal({ goal, deleteGoal, editGoal }) {
                 Edit
               </Button>
             )}
-            <Button
-              variant="contained"
-              onClick={handleDeleteGoal}
-              style={{ backgroundColor: "#ff0000", color: "#fff" }}
-            >
-              Delete
-            </Button>
+            <DeleteIcon onClick={handleDeleteGoal} />
           </Stack>
         </div>
       </div>
