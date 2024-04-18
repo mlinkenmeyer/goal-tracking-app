@@ -26,17 +26,29 @@ function Goal({ goal, deleteGoal, editGoal }) {
           {goal.category}, {goal.status}, {goal.target_date}
         </div>
         <div>
-          <Stack spacing={2} direction="row">
+          <Stack spacing={0} direction="row" style={{ marginTop: "5px" }}>
             {showGoalEditForm ? (
-              <Button variant="contained" onClick={handleEditGoal}>
+              <Button
+                size="medium"
+                variant="contained"
+                onClick={handleEditGoal}
+              >
                 Cancel
               </Button>
             ) : (
-              <Button variant="contained" onClick={handleEditGoal}>
+              <Button
+                size="medium"
+                variant="contained"
+                onClick={handleEditGoal}
+              >
                 Edit
               </Button>
             )}
-            <DeleteIcon onClick={handleDeleteGoal} />
+            <div className="delete-icon-wrapper">
+              <Button onClick={handleDeleteGoal}>
+                <DeleteIcon style={{ color: "#000" }} />
+              </Button>
+            </div>
           </Stack>
         </div>
       </div>

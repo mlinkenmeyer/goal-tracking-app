@@ -7,6 +7,8 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -106,10 +108,19 @@ function GoalsPage() {
             showGoalForm={showGoalForm}
             setShowGoalForm={setShowGoalForm}
           />
-          <button onClick={toggleGoalForm}>Cancel</button>
+          <Button
+            size="medium"
+            variant="contained"
+            onClick={toggleGoalForm}
+            style={{ marginTop: "10px" }}
+          >
+            Cancel
+          </Button>
         </>
       ) : (
-        <button onClick={toggleGoalForm}>Create New Goal</button>
+        <Button size="medium" variant="contained" onClick={toggleGoalForm}>
+          Create New Goal
+        </Button>
       )}
     </div>
   );

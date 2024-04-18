@@ -1,6 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 export const GoalForm = ({
   goals,
@@ -76,76 +78,81 @@ export const GoalForm = ({
     <div>
       <form onSubmit={formik.handleSubmit}>
         <h2>{goal ? "Edit Goal" : "Create a new goal"}</h2>
-        <label>
+        <TextField
           Title
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-          />
-        </label>
+          type="text"
+          id="title"
+          name="title"
+          size="small"
+          label="Title"
+          value={formik.values.title}
+          onChange={formik.handleChange}
+        />
         {formik.errors.title && <div>{formik.errors.title}</div>}
         <br />
-        <label>
+        <TextField
           Description
-          <input
-            type="text"
-            id="description"
-            name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-          />
-        </label>
+          type="text"
+          id="description"
+          name="description"
+          size="small"
+          label="Description"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+        />
         {formik.errors.description && (
           <div div style={{ color: "red" }}>
             {formik.errors.description}
           </div>
         )}
         <br />
-        <label>
+        <TextField
           Category
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={formik.values.category}
-            onChange={formik.handleChange}
-          />
-        </label>
+          type="text"
+          id="category"
+          name="category"
+          size="small"
+          label="Category"
+          value={formik.values.category}
+          onChange={formik.handleChange}
+        />
         {formik.errors.category && <div>{formik.errors.category}</div>}
         <br />
-        <label>
+        <TextField
           Status
-          <input
-            type="text"
-            id="status"
-            name="status"
-            value={formik.values.status}
-            onChange={formik.handleChange}
-          />
-        </label>
+          type="text"
+          id="status"
+          name="status"
+          size="small"
+          label="Status"
+          value={formik.values.status}
+          onChange={formik.handleChange}
+        />
         {formik.errors.status && <div>{formik.errors.status}</div>}
         <br />
-        <label>
-          Target Date
-          <input
-            type="text"
-            id="target_date"
-            name="target_date"
-            value={formik.values.target_date}
-            onChange={formik.handleChange}
-          />
-        </label>
+        <TextField
+          Target
+          Date
+          type="text"
+          id="target_date"
+          name="target_date"
+          size="small"
+          label="Deadline"
+          value={formik.values.target_date}
+          onChange={formik.handleChange}
+        />
         {formik.errors.target_date && <div>{formik.errors.target_date}</div>}
         <br />
-        <button type="submit">{goal ? "Save" : "Create Goal"}</button>
-        {goal && (
-          <button type="button" onClick={() => setShowGoalEditForm(false)}>
-            Cancel
-          </button>
-        )}
+        <div>
+          <Button
+            type="submit"
+            size="medium"
+            variant="contained"
+            style={{ marginTop: "10px" }}
+          >
+            {goal ? "Save" : "Create Goal"}
+          </Button>
+        </div>
       </form>
     </div>
   );
