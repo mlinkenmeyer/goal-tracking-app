@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Goal from "./Goal";
 import GoalForm from "./GoalForm";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -75,14 +81,18 @@ function GoalsPage() {
             <h2>{status}</h2>
             {groupedGoalsByStatus[status.toLowerCase()] &&
               groupedGoalsByStatus[status.toLowerCase()].map((goal) => (
-                <Goal
-                  key={goal.id}
-                  goal={goal}
-                  deleteGoal={deleteGoal}
-                  showGoalForm={showGoalForm}
-                  setShowGoalForm={setShowGoalForm}
-                  editGoal={editGoal}
-                />
+                <Card key={goal.id} style={{ marginBottom: "10px" }}>
+                  <CardContent>
+                    <Goal
+                      key={goal.id}
+                      goal={goal}
+                      deleteGoal={deleteGoal}
+                      showGoalForm={showGoalForm}
+                      setShowGoalForm={setShowGoalForm}
+                      editGoal={editGoal}
+                    />
+                  </CardContent>
+                </Card>
               ))}
           </div>
         ))}
