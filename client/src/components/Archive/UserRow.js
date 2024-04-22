@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UserForm from "./UserForm";
+import UserForm from "../UserForm";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'

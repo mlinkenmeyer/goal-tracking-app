@@ -16,6 +16,7 @@ from config import app, db, api, CORS
 # Add your model imports
 from models import Goal, Journal, User
 
+
 # Views go here!
 CORS(app)
 
@@ -237,6 +238,65 @@ class JournalById(Resource):
             )
         
 api.add_resource(JournalById, "/journals/<int:id>")
+
+class UserGoalsById(Resource):
+
+    def get(self, id):
+        try:
+            user = User.query.filter_by(id=id).first()
+            num_goals = [goal.to_dict() for goal in Goal.query.filter_by(user_id=id).all()]
+            return make_response(
+                num_goals, 200
+            )
+        except:
+            return make_response(
+                {"error": "User ID does not exist"}
+            )
+        
+api.add_resource(UserGoalsById, "/users/goals/<int:id>")
+
+class ResetUsers(Resource):
+
+    def post(self):
+        
+        
+        try:
+            User.query.delete()
+
+            # Create users
+            user_a = User(name="Adam", email="adam@email.com")
+            user_b = User(name="Britney", email="britney@email.com")
+            user_c = User(name="Collin", email="collin@email.com")
+            user_d = User(name="Dan", email="dan@email.com")
+            user_e = User(name="Elsa", email="elsa@email.com")
+
+            user_a.password_hash = "adam1"
+            user_b.password_hash = "brit2"
+            user_c.password_hash = "collin3"
+            user_d.password_hash = "dan4"
+            user_e.password_hash = "elsa5"
+
+            all_users = [
+                user_a, 
+                user_b, 
+                user_c, 
+                user_d, 
+                user_e
+                ]
+
+            db.session.add_all(all_users)
+            db.session.commit()
+
+            users = [user.to_dict() for user in User.query.all()]
+            return make_response(
+                users, 200
+            )
+        except Exception as e:
+            return make_response(
+                {"error": str(e)}, 500
+            )
+
+api.add_resource(ResetUsers, "/reset_users")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
