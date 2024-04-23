@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSort } from "@fortawesome/free-solid-svg-icons";
 import UserForm from "./UserForm";
-import UserRow from "./UserRow";
+import UserCard from "./UserCard";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 function Users() {
   const [users, setUsers] = useState([]);
   const [showUserForm, setShowUserForm] = useState(false);
   const [azName, setAzName] = useState(true);
   const [azEmail, setAzEmail] = useState(true);
+  const [resetUsers, setResetUsers] = useState(false);
 
   useEffect(() => {
     fetch("/users")
       .then((r) => r.json())
       .then((data) => setUsers(data));
-  }, []);
+  }, [resetUsers]);
 
   const toggleUserForm = (e) => {
     setShowUserForm(!showUserForm);
@@ -77,37 +79,79 @@ function Users() {
     }
   };
 
+  const handleResetUsers = () => {
+    fetch("/reset_users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then((r) => {
+      if (r.ok) {
+        console.log("update");
+        setResetUsers(!resetUsers);
+      }
+    });
+  };
+
   return (
     <div>
-      <h4>Users</h4>
-      {showUserForm ? (
-        <div>
-          <button onClick={toggleUserForm}>Done Adding</button>
-          <UserForm
-            addUser={addUser}
-            showUserForm={showUserForm}
-            setShowUserForm={setShowUserForm}
-          />
-        </div>
-      ) : (
-        <button onClick={toggleUserForm}>Add New</button>
-      )}
-      <table>
-        <tbody>
-          <tr>
-            <th style={{ textAlign: "left", width: "30%" }}>
-              Name{" "}
-              <FontAwesomeIcon icon={faSort} onClick={() => handleNameSort()} />
-            </th>
-            <th style={{ textAlign: "left", width: "45%" }}>
-              Email <FontAwesomeIcon icon={faSort} onClick={handleEmailSort} />
-            </th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
+      <Box sx={{ margin: "30px" }}>
+        <Typography component="h1" variant="h4">
+          Users
+        </Typography>
+        <Button
+          sx={{ margin: "10px", backgroundColor: "purple" }}
+          variant="contained"
+          onClick={handleResetUsers}
+        >
+          Reset Users
+        </Button>
+        <br />
+        {showUserForm ? (
+          <div>
+            <Button
+              sx={{ margin: "10px", backgroundColor: "blue" }}
+              variant="contained"
+              onClick={toggleUserForm}
+            >
+              Done Adding
+            </Button>
+            <UserForm
+              addUser={addUser}
+              showUserForm={showUserForm}
+              setShowUserForm={setShowUserForm}
+            />
+          </div>
+        ) : (
+          <Button
+            sx={{ margin: "10px", backgroundColor: "blue" }}
+            variant="contained"
+            onClick={toggleUserForm}
+          >
+            Add New
+          </Button>
+        )}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            marginLeft: "10px"
+          }}
+        >
+          Note: Deleting users will remove goals and journals associated with that
+          user
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
           {users ? (
             users.map((user, key) => (
-              <UserRow
+              <UserCard
                 key={key}
                 user={user}
                 showUserForm={showUserForm}
@@ -119,8 +163,8 @@ function Users() {
           ) : (
             <p>Users Loading...</p>
           )}
-        </tbody>
-      </table>
+        </Box>
+      </Box>
     </div>
   );
 }
