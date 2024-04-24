@@ -89,7 +89,7 @@ class User(db.Model, SerializerMixin):
     goals = db.relationship("Goal", back_populates="user", cascade="all")
     journals = association_proxy("goals", "journals")
 
-    serialize_rules = ("-goals", "-journals")
+    # serialize_rules = ("-goals", "-journals")
 
     # Validations
     @validates("name")
