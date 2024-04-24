@@ -88,7 +88,7 @@ export default function UserCard({
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {user.goals.length} Goals
+            {user.goals ? user.goals.length : 0} Goals
           </Typography>
         </CardContent>
       </Card>
